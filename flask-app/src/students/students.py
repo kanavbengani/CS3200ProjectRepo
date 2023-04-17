@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
@@ -169,3 +169,26 @@ WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+
+
+# POST Requests
+@students.route('/courses/<courseID>/<sectionID>/<studentID>/reviews', methods=['POST'])
+def add_review(courseID, sectionID, studentID):
+    current_app.logger.info('Processing form data')
+    req_data = request.get_json()
+    current_app.logger.info(req_data)
+
+    review_content = req_data['review_content']
+    review_rating = req_data['review_rating']
+
+    insert_stmt = 'INSERT INTO Review (Student_ID, Course_ID, Section_ID, Review_Content, Rating) VALUES ("'
+    insert_stmt += {studentID} + '", "' + {courseID} + '", "' + \
+        {sectionID} + '", "' + review_content + '", "' + review_rating + ')'
+
+    current_app.logger.info(insert_stmt)
+
+    # execute the query
+    cursor = db.get_db().cursor()
+    cursor.execut(insert_stmt)
+    db.get_db().commit()
+    return "Success"
