@@ -90,6 +90,20 @@ CREATE TABLE IF NOT EXISTS Course
         ON UPDATE CASCADE
 );
 
+-- Professor
+CREATE TABLE IF NOT EXISTS Professor
+(
+    Prof_ID      int PRIMARY KEY,
+    FName        varchar(25) NOT NULL,
+    LName        varchar(25) NOT NULL,
+    School_ID    int         NOT NULL,
+    Years_Worked int,
+    CONSTRAINT FK_4 FOREIGN KEY (School_ID)
+        REFERENCES School (School_ID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
 -- Section
 CREATE TABLE IF NOT EXISTS Section
 (
@@ -110,20 +124,6 @@ CREATE TABLE IF NOT EXISTS Section
     CONSTRAINT FK_7 FOREIGN KEY (Prof_ID)
         REFERENCES Professor (Prof_ID)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
--- Professor
-CREATE TABLE IF NOT EXISTS Professor
-(
-    Prof_ID      int PRIMARY KEY,
-    FName        varchar(25) NOT NULL,
-    LName        varchar(25) NOT NULL,
-    School_ID    int         NOT NULL,
-    Years_Worked int,
-    CONSTRAINT FK_4 FOREIGN KEY (School_ID)
-        REFERENCES School (School_ID)
-        ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
 
