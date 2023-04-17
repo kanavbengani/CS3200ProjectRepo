@@ -69,7 +69,7 @@ def get_CourseReviews():
 
 # Gets all reviews of a particular section of a Course
 @professors.route('/courses/{courseID}/{sectionID}/reviews', methods=['GET'])
-def get_CourseReviews():
+def get_CourseReviewsForSection():
     cursor = db.get_db().cursor()
     query = '''
         SELECT Course_Name, S.FName, S.LName, Section_ID, Rating, Review_Content, Review_Date
@@ -147,7 +147,7 @@ def get_SchoolInfo():
 
 # Get all info on a School
 @professors.route('/schools/{schoolID}', methods=['GET'])
-def get_SchoolInfo():
+def get_SchoolInfoById():
     cursor = db.get_db().cursor()
     query = '''
         SELECT P.FName as \'Professor First Name\',

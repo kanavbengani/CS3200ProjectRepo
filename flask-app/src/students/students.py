@@ -169,3 +169,29 @@ WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+
+# Get textbooks for a specific course.
+@students.route('/courses/<course_id>/textbooks', methods=['GET'])
+def get_textbooks_by_course_id(course_id):
+    cursor = db.get_db().cursor()
+    cursor.execute(f"""SELECT T.Title as 'Title',
+       T.Author as 'Author',
+       T.ISBN as 'ISBN',
+       T.Course_ID as 'Course ID',
+       T.Section_ID as 'Section ID'
+FROM Course C
+            JOIN Department D using (Department_ID)
+            JOIN School Sc using (School_ID)
+            JOIN Section Se using (Course_ID)
+            JOIN Professor P using (Prof_ID)
+            JOIN Textbook T using (Section_ID)
+WHERE C.Course_ID = {course_id};""")
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    the_response = make_response(jsonify(json_data))
+    the_response.status_code = 200
+    the_response.mimetype = 'application/json'
+    return the_response
