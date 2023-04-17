@@ -21,7 +21,8 @@ def create_app():
         '/secrets/db_password.txt').readline()
     app.config['MYSQL_DATABASE_HOST'] = 'db'
     app.config['MYSQL_DATABASE_PORT'] = 3306
-    app.config['MYSQL_DATABASE_DB'] = 'CourseHub'  # Change this to your DB name
+    # Change this to your DB name
+    app.config['MYSQL_DATABASE_DB'] = 'CourseHub'
 
     # Initialize the database object with the settings above.
     db.init_app(app)
@@ -34,11 +35,11 @@ def create_app():
     # Import the various routes
     from src.views import views
     from src.students.students import students
-    from src.teachers.teachers import teachers
+    from src.professors.professors import professors
 
     # Register the routes that we just imported so they can be properly handled
     app.register_blueprint(views,       url_prefix='/v')
     app.register_blueprint(students,   url_prefix='/s')
-    app.register_blueprint(teachers,    url_prefix='/t')
+    app.register_blueprint(professors,    url_prefix='/p')
 
     return app

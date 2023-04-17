@@ -5,6 +5,7 @@ from src import db
 
 professors = Blueprint('professors', __name__)
 
+
 @professors.route('/professors', methods=['GET'])
 def get_customers():
     cursor = db.get_db().cursor()
