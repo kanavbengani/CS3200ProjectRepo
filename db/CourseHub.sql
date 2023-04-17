@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Student
     LName      varchar(25) NOT NULL,
     Email      varchar(50),
     Phone      varchar(20),
-    SSN        varchar(10)
+    SSN        varchar(20)
 );
 
 -- Enrollment_Order
@@ -90,6 +90,20 @@ CREATE TABLE IF NOT EXISTS Course
         ON UPDATE CASCADE
 );
 
+-- Professor
+CREATE TABLE IF NOT EXISTS Professor
+(
+    Prof_ID      int PRIMARY KEY,
+    FName        varchar(25) NOT NULL,
+    LName        varchar(25) NOT NULL,
+    School_ID    int         NOT NULL,
+    Years_Worked int,
+    CONSTRAINT FK_4 FOREIGN KEY (School_ID)
+        REFERENCES School (School_ID)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
 -- Section
 CREATE TABLE IF NOT EXISTS Section
 (
@@ -113,25 +127,11 @@ CREATE TABLE IF NOT EXISTS Section
         ON UPDATE CASCADE
 );
 
--- Professor
-CREATE TABLE IF NOT EXISTS Professor
-(
-    Prof_ID      int PRIMARY KEY,
-    FName        varchar(25) NOT NULL,
-    LName        varchar(25) NOT NULL,
-    School_ID    int         NOT NULL,
-    Years_Worked int,
-    CONSTRAINT FK_4 FOREIGN KEY (School_ID)
-        REFERENCES School (School_ID)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-);
-
 -- Textbook
 CREATE TABLE IF NOT EXISTS Textbook
 (
-    ISBN        int PRIMARY KEY,
-    Name        varchar(100) NOT NULL,
+    ISBN        varchar(20) PRIMARY KEY,
+    Name        varchar(500) NOT NULL,
     Price       float(5, 2),
     AuthorFName varchar(25),
     AuthorLName varchar(25),
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS Review
         REFERENCES Section (Course_ID, Section_ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-)
+);
 
 -- EnrollmentOrderDetail
 CREATE TABLE IF NOT EXISTS EnrollmentOrderDetail
@@ -176,12 +176,12 @@ CREATE TABLE IF NOT EXISTS EnrollmentOrderDetail
         REFERENCES Section (Course_ID, Section_ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-)
+);
 
 -- CourseTextbook
 CREATE TABLE IF NOT EXISTS CourseTextbook
 (
-    ISBN      int,
+    ISBN      varchar(20),
     Course_ID int,
     PRIMARY KEY (ISBN, COURSE_ID),
     CONSTRAINT FK_12 FOREIGN KEY (ISBN)
