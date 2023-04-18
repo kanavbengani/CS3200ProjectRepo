@@ -171,6 +171,8 @@ WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     return the_response
 
 # Get textbooks for a specific course.
+
+
 @students.route('/courses/<course_id>/textbooks', methods=['GET'])
 def get_textbooks_by_course_id(course_id):
     cursor = db.get_db().cursor()
@@ -197,6 +199,8 @@ WHERE C.Course_ID = {course_id};""")
     return the_response
 
 # POST Requests
+
+
 @students.route('/courses/<courseID>/<sectionID>/<studentID>/reviews', methods=['POST'])
 def add_review(courseID, sectionID, studentID):
     current_app.logger.info('Processing form data')
@@ -206,14 +210,57 @@ def add_review(courseID, sectionID, studentID):
     review_content = req_data['review_content']
     review_rating = req_data['review_rating']
 
-    insert_stmt = 'INSERT INTO Review (Student_ID, Course_ID, Section_ID, Review_Content, Rating) VALUES ("'
-    insert_stmt += {studentID} + '", "' + {courseID} + '", "' + \
-        {sectionID} + '", "' + review_content + '", "' + review_rating + ')'
+    insert_stmt = "INSERT INTO Review (Student_ID, Course_ID, Section_ID, Review_Content, Rating) VALUES ("
+    insert_stmt += f"{studentID}, {courseID}, {sectionID}, '{review_content}', {review_rating});"
 
     current_app.logger.info(insert_stmt)
 
     # execute the query
     cursor = db.get_db().cursor()
-    cursor.execut(insert_stmt)
+    cursor.execute(insert_stmt)
     db.get_db().commit()
+    return "Success"
+
+
+@students.route('/enrollments/<studentID>/', methods=['POST'])
+def add_enrollmentOrder(studentID):
+    current_app.logger.info('Processing form data')
+    req_data = request.get_json()
+    current_app.logger.info(req_data)
+
+    insert_stmt = f"INSERT INTO EnrollmentOrder (Student_ID) VALUES ({studentID});\n"
+    cursor = db.get_db().cursor()
+    cursor.execute(insert_stmt)
+    db.get_db().commit()
+
+    cursor = db.get_db().cursor()
+    cursor.execute(f"""SELECT EnrollmentOrder_ID from EnrollmentOrder
+                       order by Order_Date desc
+                       limit 1;""")
+    row_headers = [x[0] for x in cursor.description]
+    json_data = []
+    theData = cursor.fetchall()
+    for row in theData:
+        json_data.append(dict(zip(row_headers, row)))
+    current_app.logger.info(json_data)
+    the_response = json_data
+    order_id = the_response[0]['EnrollmentOrder_ID']
+
+    for section in req_data:
+        course_id = section['course_id']
+        section_id = section['section_id']
+        price = section['price']
+        semester = section['semester']
+        year = section['year']
+
+        insert_stmt = f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear)
+                          VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
+
+    current_app.logger.info(insert_stmt)
+
+    # execute the query
+    cursor = db.get_db().cursor()
+    cursor.execute(insert_stmt)
+    db.get_db().commit()
+
     return "Success"

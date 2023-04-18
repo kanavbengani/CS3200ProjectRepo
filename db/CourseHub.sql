@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS Student
 -- Enrollment_Order
 CREATE TABLE IF NOT EXISTS EnrollmentOrder
 (
-    EnrollmentOrder_ID int PRIMARY KEY,
+    EnrollmentOrder_ID int PRIMARY KEY AUTO_INCREMENT,
     Student_ID         int      NOT NULL,
     Order_Date         datetime NOT NULL DEFAULT current_timestamp,
     CONSTRAINT FK_1 FOREIGN KEY (Student_ID)
