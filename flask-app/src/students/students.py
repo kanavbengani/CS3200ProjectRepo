@@ -125,7 +125,9 @@ def get_sections_by_course_id(course_id):
                 WHEN C.Difficulty = 4 THEN 'Moderately Hard'
                 WHEN C.Difficulty = 5 THEN 'Hard'
                 ELSE 'Unknown'
-            END AS 'Difficulty'
+            END AS 'Difficulty',
+        Se.Price as 'Price',
+        Se.Capacity as 'Capacity'
 FROM Course C
             JOIN Department D using (Department_ID)
             JOIN School Sc using (School_ID)
