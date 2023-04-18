@@ -1,1 +1,59 @@
-[]
+[
+  {
+    "_id": "a5013085-e7af-4a26-8422-8f85d217977b",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/courses/4/textbooks",
+    "url": "localhost:8001/p/courses/4/textbooks",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-04-18T02:17:32.631Z",
+    "modified": "2023-04-18T02:39:30.873Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"isbn\": \"696969696-X\",\n  \"name\": \"test\",\n  \"price\": 256.99,\n  \"authorfname\": \"aryan\",\n  \"authorlname\": \"kalaskar\",\n  \"edition\": \"22\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "b131986d-c87c-4d57-ac5e-f8cab3c12289",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/courses/4/textbooks",
+    "url": "localhost:8001/p/courses/4/textbooks",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T02:38:42.217Z",
+    "modified": "2023-04-18T02:38:42.217Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"isbn\": \"361139436-X\",\n  \"name\": \"test\",\n  \"price\": 256.99,\n  \"authorfname\": \"aryan\",\n  \"authorlname\": \"kalaskar\",\n  \"edition\": \"22\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "7b4aa194-dcc9-4cfd-9ec9-9e9774d7a6a9",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/courses/4/textbooks",
+    "url": "localhost:8001/s/courses/4/textbooks",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T02:39:04.915Z",
+    "modified": "2023-04-18T02:39:36.276Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"isbn\": \"696969696-X\",\n  \"name\": \"test\",\n  \"price\": 256.99,\n  \"authorfname\": \"aryan\",\n  \"authorlname\": \"kalaskar\",\n  \"edition\": \"22\"\n}",
+      "form": []
+    },
+    "tests": []
+  }
+]

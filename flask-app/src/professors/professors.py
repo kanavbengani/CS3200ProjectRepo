@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
@@ -6,6 +6,8 @@ from src import db
 professors = Blueprint('professors', __name__)
 
 # Returns all courses.
+
+
 @professors.route('/courses', methods=['GET'])
 def get_courses():
     cursor = db.get_db().cursor()
@@ -29,6 +31,8 @@ FROM Course C
     return the_response
 
 # Returns information for a specific course.
+
+
 @professors.route('/courses/<course_id>', methods=['GET'])
 def get_courses_by_id(course_id):
     cursor = db.get_db().cursor()
@@ -53,6 +57,8 @@ WHERE C.Course_ID = %s;""", course_id)
     return the_response
 
 # Returns information for a specific section of a course.
+
+
 @professors.route('/courses/<course_id>/<section_id>', methods=['GET'])
 def get_courses_by_id_and_section_id(course_id, section_id):
     cursor = db.get_db().cursor()
@@ -80,6 +86,8 @@ WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     return the_response
 
 # Returns all sections of a specific course.
+
+
 @professors.route('/courses/<course_id>/sections', methods=['GET'])
 def get_sections_by_course_id(course_id):
     cursor = db.get_db().cursor()
@@ -112,6 +120,8 @@ WHERE C.Course_ID = {course_id};""")
     return the_response
 
 # Returns all reviews of a specific course.
+
+
 @professors.route('/courses/<course_id>/reviews', methods=['GET'])
 def get_reviews_by_course_id(course_id):
     cursor = db.get_db().cursor()
@@ -192,6 +202,8 @@ WHERE S.School_ID = {school_id};""")
     return the_response
 
 # Returns all professors employed by a school
+
+
 @professors.route('/schools/<school_id>/professors', methods=['GET'])
 def get_professors_by_school_id(school_id):
     cursor = db.get_db().cursor()
@@ -242,3 +254,57 @@ WHERE P.Prof_ID = {professor_id};""")
     the_response.status_code = 200
     the_response.mimetype = 'application/json'
     return the_response
+
+
+# Adds a textbook by a professor for a course
+@professors.route('/courses/<courseID>/textbooks', methods=['POST'])
+def add_textbook(courseID):
+    current_app.logger.info('Processing form data')
+    req_data = request.get_json()
+    current_app.logger.info(req_data)
+
+    isbn = req_data['isbn']
+    name = req_data['name']
+    price = req_data['price']
+    authorfname = req_data['authorfname']
+    authorlname = req_data['authorlname']
+    edition = req_data['edition']
+
+    insert_stmt = f"""INSERT INTO Textbook
+            (ISBN, 
+            Name, 
+            Price, 
+            AuthorFName, 
+            AuthorLName, 
+            Edition)
+    SELECT '{isbn}',
+           '{name}',
+           {price},
+           '{authorfname}',
+           '{authorlname}',
+           '{edition}'
+    WHERE NOT EXISTS
+        (SELECT 1
+         FROM Textbook
+         WHERE ISBN = '{isbn}');"""
+
+    # execute the query
+    cursor = db.get_db().cursor()
+    cursor.execute(insert_stmt)
+    db.get_db().commit()
+
+    insert_stmt = f"""INSERT INTO CourseTextbook
+            (ISBN, 
+            Course_ID)
+    SELECT '{isbn}',
+           {courseID}
+    WHERE NOT EXISTS
+        (SELECT 1
+         FROM CourseTextbook
+         WHERE ISBN = '{isbn}' AND Course_ID = {courseID});"""
+
+    # execute the query
+    cursor = db.get_db().cursor()
+    cursor.execute(insert_stmt)
+    db.get_db().commit()
+    return "Success"
