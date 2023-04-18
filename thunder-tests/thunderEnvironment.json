@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "_id": "bb35d862-d911-495f-b759-62b1780476a3",
+    "name": "Project ENV",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2023-04-18T03:37:12.152Z",
+    "modified": "2023-04-18T03:37:12.152Z",
+    "data": [
+      {
+        "name": "student",
+        "value": "http://localhost:8001/s"
+      },
+      {
+        "name": "professor",
+        "value": "http://localhost:8001/p"
+      }
+    ],
+    "envFile": "thunderEnvironment.json"
+  }
+]
