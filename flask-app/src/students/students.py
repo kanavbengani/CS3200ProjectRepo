@@ -469,6 +469,20 @@ def student_by_id(student_id):
         cursor.execute(update_stmt)
         db.get_db().commit()
         return "Success"
+    elif request.method == 'DELETE':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
+
+        delete_stmt = "DELETE FROM Student WHERE Student_ID = {student_id};"
+
+        current_app.logger.info(delete_stmt)
+
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(delete_stmt)
+        db.get_db().commit()
+        return "Success"
 
 # Returns information on a textbook given the ISBN
 
@@ -529,22 +543,46 @@ WHERE P.Prof_ID = {professor_id};""")
 # Adds a review by a student for a section of a course
 
 
-@students.route('/courses/<courseID>/<sectionID>/<studentID>/reviews', methods=['POST'])
+@students.route('/courses/<courseID>/<sectionID>/<studentID>/reviews', methods=['POST', 'DELETE'])
 def add_review(courseID, sectionID, studentID):
-    current_app.logger.info('Processing form data')
-    req_data = request.get_json()
-    current_app.logger.info(req_data)
+    if request.method == 'POST':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
 
-    review_content = req_data['review_content']
-    review_rating = req_data['review_rating']
+        review_content = req_data['review_content']
+        review_rating = req_data['review_rating']
 
-    insert_stmt = "INSERT INTO Review (Student_ID, Course_ID, Section_ID, Review_Content, Rating) VALUES ("
-    insert_stmt += f"{studentID}, {courseID}, {sectionID}, '{review_content}', {review_rating});"
+        insert_stmt = "INSERT INTO Review (Student_ID, Course_ID, Section_ID, Review_Content, Rating) VALUES ("
+        insert_stmt += f"{studentID}, {courseID}, {sectionID}, '{review_content}', {review_rating});"
 
-    current_app.logger.info(insert_stmt)
+        current_app.logger.info(insert_stmt)
 
-    # execute the query
-    cursor = db.get_db().cursor()
-    cursor.execute(insert_stmt)
-    db.get_db().commit()
-    return "Success"
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(insert_stmt)
+        db.get_db().commit()
+        return "Success"
+    elif request.method == 'DELETE':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
+
+        review_content = req_data['review_content']
+        review_rating = req_data['review_rating']
+
+        delete_stmt = "DELETE FROM Review WHERE Review_Content = '{review_content}' AND Rating = '{review_rating}';"
+
+        current_app.logger.info(insert_stmt)
+
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(delete_stmt)
+        db.get_db().commit()
+        return "Success"
+
+
+
+
+        
+
