@@ -223,37 +223,56 @@ WHERE S.School_ID = {school_id};""")
     the_response.mimetype = 'application/json'
     return the_response
 
-# Returns all courses taught by a professor
+# Returns all courses taught by a professor or updates information by professor id
 
 
-@professors.route('/professors/<professor_id>', methods=['GET'])
-def get_courses_by_professor_id(professor_id):
-    cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT
-       C.Course_ID as 'Course ID',
-       C.Course_Name as 'Course Name',
-       CASE
-              WHEN C.Difficulty = 1 THEN 'Easy'
-              WHEN C.Difficulty = 2 THEN 'Moderately Easy'
-                WHEN C.Difficulty = 3 THEN 'Moderate'
-                WHEN C.Difficulty = 4 THEN 'Moderately Hard'
-                WHEN C.Difficulty = 5 THEN 'Hard'
-                ELSE 'Unknown'
-            END AS 'Difficulty',
-        S.Section_ID as 'Section ID'
-FROM Course C
-JOIN Section S using (Course_ID)
-JOIN Professor P using (Prof_ID)
-WHERE P.Prof_ID = {professor_id};""")
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+@professors.route('/professors/<professor_id>', methods=['GET', 'PUT'])
+def professor_id(professor_id):
+    if request.method == 'GET':
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""SELECT
+        C.Course_ID as 'Course ID',
+        C.Course_Name as 'Course Name',
+        CASE
+                WHEN C.Difficulty = 1 THEN 'Easy'
+                WHEN C.Difficulty = 2 THEN 'Moderately Easy'
+                    WHEN C.Difficulty = 3 THEN 'Moderate'
+                    WHEN C.Difficulty = 4 THEN 'Moderately Hard'
+                    WHEN C.Difficulty = 5 THEN 'Hard'
+                    ELSE 'Unknown'
+                END AS 'Difficulty',
+            S.Section_ID as 'Section ID'
+        FROM Course C
+        JOIN Section S using (Course_ID)
+        JOIN Professor P using (Prof_ID)
+        WHERE P.Prof_ID = {professor_id};""")
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        the_response = make_response(jsonify(json_data))
+        the_response.status_code = 200
+        the_response.mimetype = 'application/json'
+        return the_response
+    elif request.method == 'PUT':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
+
+        fname = req_data['fname']
+        lname = req_data['lname']
+        years_worked = req_data['years_worked']
+
+        update_stmt = f"UPDATE Professor SET FName = '{fname}', LName = '{lname}', Years_Worked = '{years_worked}' WHERE Prof_ID = {professor_id}"
+
+        current_app.logger.info(update_stmt)
+
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(update_stmt)
+        db.get_db().commit()
+        return "Success"
 
 
 # Adds a textbook by a professor for a course
