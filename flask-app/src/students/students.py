@@ -334,32 +334,74 @@ WHERE D.Department_ID = {department_id};""")
 # Returns all previous enrollments for a specific student
 
 
-@students.route('/students/<student_id>/enrollments', methods=['GET'])
+@students.route('/enrollments/<student_id>', methods=['GET', 'POST'])
 def get_enrollments_by_student_id(student_id):
-    cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT
-       C.Course_Name as 'Course Name',
-       S.Section_ID as 'Section ID',
-       O.Price as 'Price',
-       concat(O.EnrolledSemester, ' ', O.EnrolledYear) as 'Enrolled In'
-FROM Section S
-JOIN Course C using (Course_ID)
-JOIN EnrollmentOrderDetail O using (Section_ID)
-JOIN EnrollmentOrder E using (EnrollmentOrder_ID)
-WHERE E.Student_ID = {student_id};""")
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    if request.method == 'GET':
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""SELECT
+        C.Course_Name as 'Course Name',
+        S.Section_ID as 'Section ID',
+        O.Price as 'Price',
+        concat(O.EnrolledSemester, ' ', O.EnrolledYear) as 'Enrolled In'
+    FROM Section S
+    JOIN Course C using (Course_ID)
+    JOIN EnrollmentOrderDetail O using (Section_ID)
+    JOIN EnrollmentOrder E using (EnrollmentOrder_ID)
+    WHERE E.Student_ID = {student_id};""")
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        the_response = make_response(jsonify(json_data))
+        the_response.status_code = 200
+        the_response.mimetype = 'application/json'
+        return the_response
+    elif request.method == 'POST':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
+
+        insert_stmt = f"INSERT INTO EnrollmentOrder (Student_ID) VALUES ({student_id});\n"
+        cursor = db.get_db().cursor()
+        cursor.execute(insert_stmt)
+        db.get_db().commit()
+
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""SELECT EnrollmentOrder_ID from EnrollmentOrder
+                        order by Order_Date desc
+                        limit 1;""")
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        current_app.logger.info(json_data)
+        the_response = json_data
+        order_id = the_response[0]['EnrollmentOrder_ID']
+
+        insert_stmt = ""
+
+        for section in req_data:
+            course_id = section['course_id']
+            section_id = section['section_id']
+            price = section['price']
+            semester = section['semester']
+            year = section['year']
+
+            insert_stmt += f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear) VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
+
+        current_app.logger.info(insert_stmt)
+
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(insert_stmt)
+        db.get_db().commit()
+
+        return "Success"
+
 
 # Returns enrollments in an enrollment order
-
-
 @students.route('/enrollmentdetails/<enrollmentorder_id>', methods=['GET'])
 def get_enrollments_by_enrollmentorder_id(enrollmentorder_id):
     cursor = db.get_db().cursor()
@@ -385,8 +427,6 @@ WHERE E.EnrollmentOrder_ID = {enrollmentorder_id};""")
     return the_response
 
 # Returns a list of reviews by the given student
-
-
 @students.route('/students/<student_id>/reviews', methods=['GET'])
 def get_reviews_by_student_id(student_id):
     cursor = db.get_db().cursor()
@@ -410,8 +450,6 @@ WHERE R.Student_ID = {student_id};""")
     return the_response
 
 # Returns information of a given student
-
-
 @students.route('/students/<student_id>', methods=['GET'])
 def get_student_by_id(student_id):
     cursor = db.get_db().cursor()
@@ -434,8 +472,6 @@ WHERE S.Student_ID = {student_id};""")
     return the_response
 
 # Returns information on a textbook given the ISBN
-
-
 @students.route('/textbooks/<isbn>', methods=['GET'])
 def get_textbook_by_isbn(isbn):
     cursor = db.get_db().cursor()
@@ -458,8 +494,6 @@ WHERE T.ISBN = {isbn};""")
     return the_response
 
 # Returns all courses taught by a professor
-
-
 @students.route('/professors/<professor_id>', methods=['GET'])
 def get_courses_by_professor_id(professor_id):
     cursor = db.get_db().cursor()
@@ -489,9 +523,7 @@ WHERE P.Prof_ID = {professor_id};""")
     the_response.mimetype = 'application/json'
     return the_response
 
-# POST Requests
-
-
+# Adds a review by a student for a section of a course
 @students.route('/courses/<courseID>/<sectionID>/<studentID>/reviews', methods=['POST'])
 def add_review(courseID, sectionID, studentID):
     current_app.logger.info('Processing form data')
