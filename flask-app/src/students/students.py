@@ -153,15 +153,13 @@ def get_reviews_by_course_id(course_id):
        R.Review_Date as 'Date',
        R.Course_ID as 'Course ID',
        R.Section_ID as 'Section ID',
-       R.Student_ID as 'Student ID',
-       concat(S.FName, ' ', S.LName) as 'Student Name'
+       R.Student_ID as 'Student ID'
 FROM Course C
             JOIN Department D using (Department_ID)
             JOIN School Sc using (School_ID)
             JOIN Section Se using (Course_ID)
             JOIN Professor P using (Prof_ID)
             JOIN Review R using (Section_ID)
-            JOIN Student S using (Student_ID)
 WHERE C.Course_ID = {course_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -184,15 +182,13 @@ def get_reviews_by_course_id_and_section_id(course_id, section_id):
        R.Review_Date as 'Date',
        R.Course_ID as 'Course ID',
        R.Section_ID as 'Section ID',
-       R.Student_ID as 'Student ID',
-         concat(S.FName, ' ', S.LName) as 'Student Name'
+       R.Student_ID as 'Student ID'
 FROM Course C
             JOIN Department D using (Department_ID)
             JOIN School Sc using (School_ID)
             JOIN Section Se using (Course_ID)
             JOIN Professor P using (Prof_ID)
             JOIN Review R using (Section_ID)
-            JOIN Student S using (Student_ID)
 WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -462,7 +458,7 @@ def get_reviews_by_student_id(student_id):
        C.Course_Name as 'Course Name',
        S.Section_ID as 'Section ID',
        R.Review_Content as 'Review Content',
-       R.Rating as 'Rating'
+       R.Rating as 'Rating out of 5'
 FROM Review R
 JOIN Section S using (Section_ID)
 JOIN Course C on R.Course_ID = C.Course_ID
