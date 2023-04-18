@@ -1,1 +1,33 @@
-[]
+[
+  {
+    "_id": "464faeb8-418a-46a1-9a48-03052b752c02",
+    "colId": "b0521d6b-7d04-4334-b0dd-063685d6340a",
+    "containerId": "4a986831-cb55-482c-90f4-a31a66285164",
+    "name": "StudentReview1",
+    "url": "localhost:8001/s/courses/49/849/1/reviews",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-04-18T03:50:13.629Z",
+    "modified": "2023-04-18T03:53:33.579Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"review_content\": \"Very good class to take!\",\n  \"review_rating\": 5\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "3d64a67f-0aea-40dd-98d6-99253f7fc83b",
+    "colId": "b0521d6b-7d04-4334-b0dd-063685d6340a",
+    "containerId": "4a986831-cb55-482c-90f4-a31a66285164",
+    "name": "StudentReview2",
+    "url": "",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-04-18T03:52:58.677Z",
+    "modified": "2023-04-18T03:52:58.677Z",
+    "headers": []
+  }
+]
