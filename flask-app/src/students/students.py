@@ -450,29 +450,50 @@ WHERE R.Student_ID = {student_id};""")
     the_response.mimetype = 'application/json'
     return the_response
 
-# Returns information of a given student
+# Information of a given student
 
 
-@students.route('/students/<student_id>', methods=['GET'])
-def get_student_by_id(student_id):
-    cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT
-       S.Student_ID as 'Student ID',
-       concat(S.FName, ' ', S.LName) as 'Student Name',
-       S.Email as 'Student Email',
-       S.Phone as 'Student Phone',
-       S.SSN as 'Student Address'
-FROM Student S
-WHERE S.Student_ID = {student_id};""")
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+@students.route('/students/<student_id>', methods=['GET', 'PUT'])
+def student_by_id(student_id):
+    if request.method == 'GET':
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""SELECT
+        S.Student_ID as 'Student ID',
+        concat(S.FName, ' ', S.LName) as 'Student Name',
+        S.Email as 'Student Email',
+        S.Phone as 'Student Phone',
+        S.SSN as 'Student SSN'
+    FROM Student S
+    WHERE S.Student_ID = {student_id};""")
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        the_response = make_response(jsonify(json_data))
+        the_response.status_code = 200
+        the_response.mimetype = 'application/json'
+        return the_response
+    elif request.method == 'PUT':
+        current_app.logger.info('Processing form data')
+        req_data = request.get_json()
+        current_app.logger.info(req_data)
+
+        fname = req_data['fname']
+        lname = req_data['lname']
+        email = req_data['email']
+        phone = req_data['phone']
+        ssn = req_data['ssn']
+
+        update_stmt = f"UPDATE Student SET FName = '{fname}', LName = '{lname}', Email = '{email}', Phone = '{phone}', SSN = '{ssn}' WHERE Student_ID = {student_id}"
+
+        current_app.logger.info(update_stmt)
+
+        # execute the query
+        cursor = db.get_db().cursor()
+        cursor.execute(update_stmt)
+        db.get_db().commit()
+        return "Success"
 
 # Returns information on a textbook given the ISBN
 
