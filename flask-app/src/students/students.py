@@ -563,6 +563,7 @@ def add_review(courseID, sectionID, studentID):
         cursor.execute(insert_stmt)
         db.get_db().commit()
         return "Success"
+        
     elif request.method == 'DELETE':
         current_app.logger.info('Processing form data')
         req_data = request.get_json()
