@@ -55,5 +55,195 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "aeb55c8b-93ba-413b-b78e-965a58960074",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/courses/179/979",
+    "url": "localhost:8001/p/courses/179/979",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T02:51:34.095Z",
+    "modified": "2023-04-18T02:59:51.786Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"Course_ID\": 179,\n  \"Section_ID\": 979,\n  \"InPerson\": 0,\n  \"City\": \"Detroit\",\n  \"State\": \"Michigan\",\n  \"Zipcode\": 56113,\n  \"Capacity\": 56,\n  \"Prof_ID\": 1,\n  \"Price\": 223.89\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "ac1bc17c-9df6-4be6-9cb0-a001990bff3f",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/courses/179/979",
+    "url": "localhost:8001/p/courses/179/979",
+    "method": "PUT",
+    "sortNum": 0,
+    "created": "2023-04-18T02:54:18.143Z",
+    "modified": "2023-04-18T02:56:35.732Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"Course_ID\": 179,\n  \"Section_ID\": 979,\n  \"InPerson\": 0,\n  \"City\": \"Detroit\",\n  \"State\": \"Michigan\",\n  \"Zipcode\": 56113,\n  \"Capacity\": 56,\n  \"Prof_ID\": 1,\n  \"Price\": 223.89\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "a0f2b20e-11a7-4985-bd07-485c0bf6f146",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/textbooks",
+    "url": "localhost:8001/s/textbooks",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T03:08:10.805Z",
+    "modified": "2023-04-18T03:08:10.805Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"Course_ID\": 179,\n  \"Section_ID\": 979,\n  \"InPerson\": 0,\n  \"City\": \"Detroit\",\n  \"State\": \"Michigan\",\n  \"Zipcode\": 56113,\n  \"Capacity\": 56,\n  \"Prof_ID\": 1,\n  \"Price\": 223.89\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "1a97a9c5-b688-4b6e-9abf-fbd1ce28b76c",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/textbooks/951352200-8",
+    "url": "localhost:8001/s/textbooks/951352200-8",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T03:08:22.262Z",
+    "modified": "2023-04-18T03:12:57.704Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "3ebc2ff1-496a-4a77-8f29-a4393b84ef84",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/textbooks/\"951352200-8\"",
+    "url": "localhost:8001/s/textbooks/\"951352200-8\"",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T03:08:39.699Z",
+    "modified": "2023-04-18T03:10:08.702Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "dbd313e8-7973-4396-bb06-b1557f8c72e1",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/textbooks/\"951352200-8\"",
+    "url": "localhost:8001/s/textbooks/\"951352200-8\"",
+    "method": "PUT",
+    "sortNum": 0,
+    "created": "2023-04-18T03:09:47.851Z",
+    "modified": "2023-04-18T03:09:47.851Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"Price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "8b62a819-c569-4520-9a8b-bf356febbd57",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/textbooks/\"951352200-8\"",
+    "url": "localhost:8001/p/textbooks/\"951352200-8\"",
+    "method": "PUT",
+    "sortNum": 0,
+    "created": "2023-04-18T03:09:52.717Z",
+    "modified": "2023-04-18T03:10:00.286Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "25051328-24f3-4654-ab4a-bbda2877b6ca",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/textbooks/\"951352200-8\"",
+    "url": "localhost:8001/p/textbooks/\"951352200-8\"",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T03:10:04.773Z",
+    "modified": "2023-04-18T03:10:04.773Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "fa7e1eaf-1921-450d-9ecb-65f1a201c163",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/s/textbooks/'951352200-8'",
+    "url": "localhost:8001/s/textbooks/'951352200-8'",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-04-18T03:12:25.043Z",
+    "modified": "2023-04-18T03:12:25.043Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "3a0ba27c-7f4b-4806-b0fb-041a13f809db",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:8001/p/textbooks/'951352200-8'",
+    "url": "localhost:8001/p/textbooks/'951352200-8'",
+    "method": "PUT",
+    "sortNum": 0,
+    "created": "2023-04-18T03:13:08.749Z",
+    "modified": "2023-04-18T03:13:08.749Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"price\": 699.42\n}",
+      "form": []
+    },
+    "tests": []
   }
 ]

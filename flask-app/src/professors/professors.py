@@ -59,31 +59,48 @@ WHERE C.Course_ID = %s;""", course_id)
 # Returns information for a specific section of a course.
 
 
-@professors.route('/courses/<course_id>/<section_id>', methods=['GET'])
+@professors.route('/courses/<course_id>/<section_id>', methods=['GET', 'PUT'])
 def get_courses_by_id_and_section_id(course_id, section_id):
-    cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT C.Course_Name as 'Course Name',
-       Se.Section_ID as 'Section',
-       Sc.School_Name as 'School Name',
-       IF(Se.InPerson='1',"Yes","No") AS 'In Person?',
-       P.FName as 'Professor First Name',
-       P.LName as 'Professor Last Name',
-       C.Difficulty as 'Difficulty'
-FROM Course C
-            JOIN Department D using (Department_ID)
-            JOIN School Sc using (School_ID)
-            JOIN Section Se using (Course_ID)
-            JOIN Professor P using (Prof_ID)
-WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
-    row_headers = [x[0] for x in cursor.description]
-    json_data = []
-    theData = cursor.fetchall()
-    for row in theData:
-        json_data.append(dict(zip(row_headers, row)))
-    the_response = make_response(jsonify(json_data))
-    the_response.status_code = 200
-    the_response.mimetype = 'application/json'
-    return the_response
+    if request.method == 'GET':
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""SELECT C.Course_Name as 'Course Name',
+        Se.Section_ID as 'Section',
+        Sc.School_Name as 'School Name',
+        IF(Se.InPerson='1',"Yes","No") AS 'In Person?',
+        P.FName as 'Professor First Name',
+        P.LName as 'Professor Last Name',
+        C.Difficulty as 'Difficulty'
+    FROM Course C
+                JOIN Department D using (Department_ID)
+                JOIN School Sc using (School_ID)
+                JOIN Section Se using (Course_ID)
+                JOIN Professor P using (Prof_ID)
+    WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
+        row_headers = [x[0] for x in cursor.description]
+        json_data = []
+        theData = cursor.fetchall()
+        for row in theData:
+            json_data.append(dict(zip(row_headers, row)))
+        the_response = make_response(jsonify(json_data))
+        the_response.status_code = 200
+        the_response.mimetype = 'application/json'
+        return the_response
+    elif request.method == 'PUT':
+        cursor = db.get_db().cursor()
+        cursor.execute(f"""UPDATE Section
+    SET Course_ID = {request.json['Course_ID']},
+    Section_ID = {request.json['Section_ID']},
+    InPerson = {request.json['InPerson']},
+    City = '{request.json['City']}',
+    State = '{request.json['State']}',
+    Zipcode = {request.json['Zipcode']},
+    Capacity = {request.json['Capacity']},
+    Prof_ID = {request.json['Prof_ID']},
+    Price = {request.json['Price']}
+    WHERE Section_ID = {section_id};""")
+        db.get_db().commit()
+        return make_response(jsonify({'message': 'Section updated successfully.'}), 200)
+
 
 # Returns all sections of a specific course.
 
@@ -306,5 +323,24 @@ def add_textbook(courseID):
     # execute the query
     cursor = db.get_db().cursor()
     cursor.execute(insert_stmt)
+    db.get_db().commit()
+    return "Success"
+
+# Updates the price of a textbook
+@professors.route('/textbooks/<isbn>', methods=['PUT'])
+def update_textbook(isbn):
+    current_app.logger.info('Processing form data')
+    req_data = request.get_json()
+    current_app.logger.info(req_data)
+
+    price = req_data['price']
+
+    update_stmt = f"""UPDATE Textbook
+    SET Price = {price}
+    WHERE ISBN = {isbn};"""
+
+    # execute the query
+    cursor = db.get_db().cursor()
+    cursor.execute(update_stmt)
     db.get_db().commit()
     return "Success"
