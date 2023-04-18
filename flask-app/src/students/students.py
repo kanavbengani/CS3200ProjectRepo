@@ -458,6 +458,8 @@ WHERE T.ISBN = {isbn};""")
     return the_response
 
 # Returns all courses taught by a professor
+
+
 @students.route('/professors/<professor_id>', methods=['GET'])
 def get_courses_by_professor_id(professor_id):
     cursor = db.get_db().cursor()
@@ -535,6 +537,8 @@ def add_enrollmentOrder(studentID):
     the_response = json_data
     order_id = the_response[0]['EnrollmentOrder_ID']
 
+    insert_stmt = ""
+
     for section in req_data:
         course_id = section['course_id']
         section_id = section['section_id']
@@ -542,8 +546,7 @@ def add_enrollmentOrder(studentID):
         semester = section['semester']
         year = section['year']
 
-        insert_stmt = f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear)
-                          VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
+        insert_stmt += f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear) VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
 
     current_app.logger.info(insert_stmt)
 
