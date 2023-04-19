@@ -475,7 +475,7 @@ WHERE R.Student_ID = {student_id};""")
 # Information of a given student
 
 
-@students.route('/students/<student_id>', methods=['GET', 'PUT'])
+@students.route('/students/<student_id>', methods=['GET', 'PUT', 'DELETE'])
 def student_by_id(student_id):
     if request.method == 'GET':
         cursor = db.get_db().cursor()
@@ -517,11 +517,7 @@ def student_by_id(student_id):
         db.get_db().commit()
         return "Success"
     elif request.method == 'DELETE':
-        current_app.logger.info('Processing form data')
-        req_data = request.get_json()
-        current_app.logger.info(req_data)
-
-        delete_stmt = "DELETE FROM Student WHERE Student_ID = {student_id};"
+        delete_stmt = f"DELETE FROM Student WHERE Student_ID = {student_id};"
 
         current_app.logger.info(delete_stmt)
 
@@ -614,16 +610,9 @@ def add_review(courseID, sectionID, studentID):
         return "Success"
 
     elif request.method == 'DELETE':
-        current_app.logger.info('Processing form data')
-        req_data = request.get_json()
-        current_app.logger.info(req_data)
+        delete_stmt = f"DELETE FROM Review WHERE Student_ID = {studentID} AND Course_ID = {courseID} AND Section_ID = {sectionID};"
 
-        review_content = req_data['review_content']
-        review_rating = req_data['review_rating']
-
-        delete_stmt = "DELETE FROM Review WHERE Review_Content = '{review_content}' AND Rating = '{review_rating}';"
-
-        current_app.logger.info(insert_stmt)
+        current_app.logger.info(delete_stmt)
 
         # execute the query
         cursor = db.get_db().cursor()

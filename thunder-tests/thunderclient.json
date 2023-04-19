@@ -564,5 +564,99 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "e112b855-65f3-4d24-b2a9-317d15ccadf2",
+    "colId": "414ace43-955e-454e-8131-1d88ffcd5fd7",
+    "containerId": "4feadefd-8d5e-4078-8d9c-039db5fc8e02",
+    "name": "StudentsByStudentID1",
+    "url": "{{student}}/students/1",
+    "method": "PUT",
+    "sortNum": 10000,
+    "created": "2023-04-19T21:53:53.644Z",
+    "modified": "2023-04-19T21:58:52.854Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"fname\": \"Wallis\",\n  \"lname\": \"Abramcik\",\n  \"email\": \"wabramcik0@dailymotion.com\",\n  \"phone\": \"123-456-7890\",\n  \"ssn\": \"432-28-7872\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "e76d778b-037e-416c-903d-2c6c7c4ae257",
+    "colId": "414ace43-955e-454e-8131-1d88ffcd5fd7",
+    "containerId": "4feadefd-8d5e-4078-8d9c-039db5fc8e02",
+    "name": "StudentsByStudentID2",
+    "url": "{{student}}/students/2",
+    "method": "PUT",
+    "sortNum": 20000,
+    "created": "2023-04-19T21:59:07.046Z",
+    "modified": "2023-04-19T21:59:46.958Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"fname\": \"Lauret\",\n  \"lname\": \"Antley\",\n  \"email\": \"lantley1@nsw.gov.au\",\n  \"phone\": \"163-152-9178\",\n  \"ssn\": \"849-02-0407\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "27dd2af2-0f16-49d8-a3dd-1ffccd5f36d1",
+    "colId": "2af2975c-397b-4402-a840-2573998ca5aa",
+    "containerId": "bef117bd-aed5-4d73-9227-22a58d908b38",
+    "name": "StudentsByStudentID1",
+    "url": "{{student}}/students/2",
+    "method": "DELETE",
+    "sortNum": 10000,
+    "created": "2023-04-19T22:01:17.681Z",
+    "modified": "2023-04-19T22:07:01.930Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "05e1e235-956e-4b4e-96f9-c7c6175123ca",
+    "colId": "2af2975c-397b-4402-a840-2573998ca5aa",
+    "containerId": "bef117bd-aed5-4d73-9227-22a58d908b38",
+    "name": "StudentsByStudentID2",
+    "url": "{{student}}/students/1",
+    "method": "DELETE",
+    "sortNum": 20000,
+    "created": "2023-04-19T22:03:27.740Z",
+    "modified": "2023-04-19T22:03:27.740Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "9765540c-2e38-4bbc-890a-7fb07090e6e2",
+    "colId": "2af2975c-397b-4402-a840-2573998ca5aa",
+    "containerId": "bef117bd-aed5-4d73-9227-22a58d908b38",
+    "name": "CoursesByCourseIDBySectionIDByStudentIDReviews1",
+    "url": "{{student}}/courses/73/73/6/reviews",
+    "method": "DELETE",
+    "sortNum": 20000,
+    "created": "2023-04-19T22:07:19.243Z",
+    "modified": "2023-04-19T22:07:58.855Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "b26bb123-22e3-4d45-a3fe-75c0a9b50e04",
+    "colId": "2af2975c-397b-4402-a840-2573998ca5aa",
+    "containerId": "bef117bd-aed5-4d73-9227-22a58d908b38",
+    "name": "CoursesByCourseIDBySectionIDByStudentIDReviews2",
+    "url": "{{student}}/courses/16/16/3/reviews",
+    "method": "DELETE",
+    "sortNum": 30000,
+    "created": "2023-04-19T22:07:40.172Z",
+    "modified": "2023-04-19T22:07:40.172Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]
