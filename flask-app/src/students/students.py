@@ -84,6 +84,7 @@ def get_courses_by_id_and_section_id(course_id, section_id):
        IF(Se.InPerson='1',"Yes","No") AS 'In Person?',
        P.FName as 'Professor First Name',
        P.LName as 'Professor Last Name',
+       Se.Price as 'Price',
        CASE
               WHEN C.Difficulty = 1 THEN 'Easy'
               WHEN C.Difficulty = 2 THEN 'Moderately Easy'
@@ -150,18 +151,20 @@ WHERE C.Course_ID = {course_id};""")
 @students.route('/courses/<course_id>/reviews', methods=['GET'])
 def get_reviews_by_course_id(course_id):
     cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT R.Rating as 'Rating',
+    cursor.execute(f"""SELECT R.Rating as 'Rating out of 5',
        R.Review_Content as 'Comment',
        R.Review_Date as 'Date',
-       R.Course_ID as 'Course ID',
-       R.Section_ID as 'Section ID',
-       R.Student_ID as 'Student ID'
+       C.Course_Name as 'Course Name',
+       R.Section_ID as 'Section Number',
+       concat(P.FName, ' ', P.LName) as 'Professor Name',
+       concat(St.FName, ' ', St.LName) as 'Student Name'
 FROM Course C
             JOIN Department D using (Department_ID)
             JOIN School Sc using (School_ID)
             JOIN Section Se using (Course_ID)
             JOIN Professor P using (Prof_ID)
             JOIN Review R using (Section_ID)
+            JOIN Student St using (Student_ID)
 WHERE C.Course_ID = {course_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -179,18 +182,20 @@ WHERE C.Course_ID = {course_id};""")
 @students.route('/courses/<course_id>/<section_id>/reviews', methods=['GET'])
 def get_reviews_by_course_id_and_section_id(course_id, section_id):
     cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT R.Rating as 'Rating',
+    cursor.execute(f"""SELECT R.Rating as 'Rating out of 5',
        R.Review_Content as 'Comment',
        R.Review_Date as 'Date',
-       R.Course_ID as 'Course ID',
-       R.Section_ID as 'Section ID',
-       R.Student_ID as 'Student ID'
+       C.Course_Name as 'Course Name',
+       R.Section_ID as 'Section Number',
+       concat(P.FName, ' ', P.LName) as 'Professor Name',
+       concat(St.FName, ' ', St.LName) as 'Student Name'
 FROM Course C
             JOIN Department D using (Department_ID)
             JOIN School Sc using (School_ID)
             JOIN Section Se using (Course_ID)
             JOIN Professor P using (Prof_ID)
             JOIN Review R using (Section_ID)
+            JOIN Student St using (Student_ID)
 WHERE C.Course_ID = {course_id} AND Se.Section_ID = {section_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -211,7 +216,7 @@ def get_textbooks_by_course_id(course_id):
     cursor.execute(f"""SELECT T.Name as 'Title',
        concat(T.AuthorFName, ' ', T.AuthorLName) as 'Author',
        ISBN as 'ISBN',
-       Course_ID as 'Course ID'
+       C.Course_Name as 'Course Name'
 FROM Course C
             JOIN CourseTextbook USING (Course_ID)
             JOIN Textbook T USING (ISBN)
@@ -255,15 +260,11 @@ FROM School S;""")
 def get_school_by_id(school_id):
     cursor = db.get_db().cursor()
     cursor.execute(f"""SELECT DISTINCT S.School_ID as 'School ID',
-       S.School_Name as 'School Name',
-       S.City as 'City',
-         S.State as 'State',
-         S.Zipcode as 'Zipcode',
-            D.Department_Name as 'Department Name'
-FROM School S
-JOIN Department D using (School_ID)
-JOIN Course C using (Department_ID)
-WHERE S.School_ID = {school_id};""")
+                        S.School_Name as 'School Name',
+                        S.City as 'City',
+                        S.State as 'State',
+                        S.Zipcode as 'Zipcode'
+                    FROM School S WHERE S.School_ID = {school_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
@@ -290,7 +291,7 @@ def get_courses_by_school_id(school_id):
                 WHEN C.Difficulty = 5 THEN 'Hard'
                 ELSE 'Unknown'
             END AS 'Difficulty',
-       C.Department_ID as 'Department ID'
+       D.Department_Name as 'Department'
 FROM Course C
 JOIN Department D using (Department_ID)
 JOIN School S using (School_ID)
@@ -356,7 +357,7 @@ WHERE D.Department_ID = {department_id};""")
     the_response.mimetype = 'application/json'
     return the_response
 
-# Returns all previous enrollments for a specific student
+# Returns all previous enrollment orders for a specific student
 
 
 @students.route('/enrollments/<student_id>', methods=['GET', 'POST'])
@@ -364,15 +365,14 @@ def get_enrollments_by_student_id(student_id):
     if request.method == 'GET':
         cursor = db.get_db().cursor()
         cursor.execute(f"""SELECT
-        C.Course_Name as 'Course Name',
-        S.Section_ID as 'Section ID',
-        O.Price as 'Price',
-        concat(O.EnrolledSemester, ' ', O.EnrolledYear) as 'Enrolled In'
-    FROM Section S
-    JOIN Course C using (Course_ID)
-    JOIN EnrollmentOrderDetail O using (Section_ID)
-    JOIN EnrollmentOrder E using (EnrollmentOrder_ID)
-    WHERE E.Student_ID = {student_id};""")
+        E.EnrollmentOrder_ID as 'Order Number',
+        E.Order_Date as 'Order date',
+        sum(Ed.Price) as 'Order Total Price'
+    FROM EnrollmentOrder E
+    JOIN EnrollmentOrderDetail Ed using (EnrollmentOrder_ID)
+    WHERE E.Student_ID = {student_id}
+    GROUP BY E.EnrollmentOrder_ID
+    ORDER BY E.Order_Date;""")
         row_headers = [x[0] for x in cursor.description]
         json_data = []
         theData = cursor.fetchall()
@@ -413,14 +413,10 @@ def get_enrollments_by_student_id(student_id):
             semester = section['semester']
             year = section['year']
 
-            insert_stmt += f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear) VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
-
-        current_app.logger.info(insert_stmt)
-
-        # execute the query
-        cursor = db.get_db().cursor()
-        cursor.execute(insert_stmt)
-        db.get_db().commit()
+            insert_stmt = f"""INSERT INTO EnrollmentOrderDetail (EnrollmentOrder_ID, Course_ID, Section_ID, Price, EnrolledSemester, EnrolledYear) VALUES  ({order_id}, {course_id}, {section_id}, {price}, "{semester}", {year});\n"""
+            cursor = db.get_db().cursor()
+            cursor.execute(insert_stmt)
+            db.get_db().commit()
 
         return "Success"
 
@@ -430,9 +426,8 @@ def get_enrollments_by_student_id(student_id):
 def get_enrollments_by_enrollmentorder_id(enrollmentorder_id):
     cursor = db.get_db().cursor()
     cursor.execute(f"""SELECT
-        E.Order_Date as 'Order Date',
        C.Course_Name as 'Course Name',
-       S.Section_ID as 'Section ID',
+       S.Section_ID as 'Section Number',
        O.Price as 'Price',
        concat(O.EnrolledSemester, ' ', O.EnrolledYear) as 'Enrolled In'
 FROM Section S
@@ -458,12 +453,14 @@ def get_reviews_by_student_id(student_id):
     cursor = db.get_db().cursor()
     cursor.execute(f"""SELECT
        C.Course_Name as 'Course Name',
-       S.Section_ID as 'Section ID',
+       S.Section_ID as 'Section Number',
+       concat(P.FName, ' ', P.LName) as 'Professor',
        R.Review_Content as 'Review Content',
        R.Rating as 'Rating out of 5'
 FROM Review R
 JOIN Section S using (Section_ID)
 JOIN Course C on R.Course_ID = C.Course_ID
+JOIN Professor P using (Prof_ID)
 WHERE R.Student_ID = {student_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -575,10 +572,12 @@ def get_courses_by_professor_id(professor_id):
                 WHEN C.Difficulty = 5 THEN 'Hard'
                 ELSE 'Unknown'
             END AS 'Difficulty',
-        S.Section_ID as 'Section ID'
+        S.Section_ID as 'Section Number',
+        Sc.School_Name as 'School'
 FROM Course C
 JOIN Section S using (Course_ID)
 JOIN Professor P using (Prof_ID)
+JOIN School Sc using (School_ID)
 WHERE P.Prof_ID = {professor_id};""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
@@ -613,7 +612,7 @@ def add_review(courseID, sectionID, studentID):
         cursor.execute(insert_stmt)
         db.get_db().commit()
         return "Success"
-        
+
     elif request.method == 'DELETE':
         current_app.logger.info('Processing form data')
         req_data = request.get_json()
@@ -631,9 +630,3 @@ def add_review(courseID, sectionID, studentID):
         cursor.execute(delete_stmt)
         db.get_db().commit()
         return "Success"
-
-
-
-
-        
-
