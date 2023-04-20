@@ -151,21 +151,14 @@ WHERE C.Course_ID = {course_id};""")
 @students.route('/courses/<course_id>/reviews', methods=['GET'])
 def get_reviews_by_course_id(course_id):
     cursor = db.get_db().cursor()
-    cursor.execute(f"""SELECT R.Rating as 'Rating out of 5',
-       R.Review_Content as 'Comment',
-       R.Review_Date as 'Date',
-       C.Course_Name as 'Course Name',
-       R.Section_ID as 'Section Number',
-       concat(P.FName, ' ', P.LName) as 'Professor Name',
-       concat(St.FName, ' ', St.LName) as 'Student Name'
-FROM Course C
-            JOIN Department D using (Department_ID)
-            JOIN School Sc using (School_ID)
+    cursor.execute(f"""SELECT 
+       round(avg(R.Rating),1) as 'Average Rating of All Sections (out of 5)',
+       C.Course_Name as 'Course Name'
+       FROM Course C
             JOIN Section Se using (Course_ID)
-            JOIN Professor P using (Prof_ID)
             JOIN Review R using (Section_ID)
-            JOIN Student St using (Student_ID)
-WHERE C.Course_ID = {course_id};""")
+       WHERE C.Course_ID = {course_id}
+       GROUP BY C.Course_Name;""")
     row_headers = [x[0] for x in cursor.description]
     json_data = []
     theData = cursor.fetchall()
