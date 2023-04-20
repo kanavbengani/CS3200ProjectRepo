@@ -1062,5 +1062,33 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "5d477e8f-48be-4947-91e8-8f5f49d89422",
+    "colId": "0b95891b-a552-4b85-a66d-0d4b71ec91f5",
+    "containerId": "fd032909-e2c1-4d4d-98e5-26d3ea87a2a0",
+    "name": "ProfessorsByProfessorID1",
+    "url": "{{professor}}/professors/1",
+    "method": "DELETE",
+    "sortNum": 410000,
+    "created": "2023-04-20T02:25:39.278Z",
+    "modified": "2023-04-20T02:26:10.319Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "2dd87e2d-a6f7-4fe6-be23-75f6727adb2d",
+    "colId": "0b95891b-a552-4b85-a66d-0d4b71ec91f5",
+    "containerId": "fd032909-e2c1-4d4d-98e5-26d3ea87a2a0",
+    "name": "ProfessorsByProfessorID2",
+    "url": "{{professor}}/professors/2",
+    "method": "DELETE",
+    "sortNum": 420000,
+    "created": "2023-04-20T02:26:16.632Z",
+    "modified": "2023-04-20T02:26:54.899Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]

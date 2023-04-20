@@ -243,7 +243,7 @@ WHERE S.School_ID = {school_id};""")
 # Returns informatin about a professor or updates information by professor id
 
 
-@professors.route('/professors/<professor_id>', methods=['GET', 'PUT'])
+@professors.route('/professors/<professor_id>', methods=['GET', 'PUT', 'DELETE'])
 def professor_id(professor_id):
     if request.method == 'GET':
         cursor = db.get_db().cursor()
@@ -280,6 +280,13 @@ def professor_id(professor_id):
         # execute the query
         cursor = db.get_db().cursor()
         cursor.execute(update_stmt)
+        db.get_db().commit()
+        return "Success"
+    elif request.method == 'DELETE':
+        delete_stmt = f"DELETE FROM Professor WHERE Prof_ID = {professor_id};"
+
+        cursor = db.get_db().cursor()
+        cursor.execute(delete_stmt)
         db.get_db().commit()
         return "Success"
 
