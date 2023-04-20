@@ -244,7 +244,7 @@ WHERE S.School_ID = {school_id};""")
     the_response.mimetype = 'application/json'
     return the_response
 
-# Returns informatin about a professor or updates information by professor id
+# Returns information about a professor or updates information by professor id
 
 
 @professors.route('/professors/<professor_id>', methods=['GET', 'PUT', 'DELETE'])
