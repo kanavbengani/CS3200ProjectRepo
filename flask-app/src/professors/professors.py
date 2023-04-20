@@ -70,6 +70,10 @@ def get_courses_by_id_and_section_id(course_id, section_id):
        P.FName as 'Professor First Name',
        P.LName as 'Professor Last Name',
        Se.Price as 'Price',
+       Se.City as 'City',
+       Se.State as 'State',
+       Se.Zipcode as 'Zipcode',
+       Se.Capacity as 'Capacity',
        CASE
               WHEN C.Difficulty = 1 THEN 'Easy'
               WHEN C.Difficulty = 2 THEN 'Moderately Easy'
